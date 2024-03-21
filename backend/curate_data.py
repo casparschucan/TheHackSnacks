@@ -1,12 +1,12 @@
 import pandas as pd 
 import numpy as np
 
-
+curr_folder = "/".join(__file__.split("/")[:-1])
 
 # Load the data
 def load_data() -> pd.DataFrame:
     """Loads the ESG data from the csv file provided by SIX"""
-    return pd.read_csv("../ESG/EUESGMANUFACTURER.csv")
+    return pd.read_csv(f"{curr_folder}/../ESG/EUESGMANUFACTURER.csv")
 
 def pivot_data(data: pd.DataFrame) -> pd.DataFrame:
     # Reshape the data

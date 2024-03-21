@@ -6,3 +6,5 @@ services:
     ports:
       - "9876:5000"
     restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1

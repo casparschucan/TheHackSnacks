@@ -13,4 +13,4 @@ COPY ./ /app
 # Make the entrypoint executable
 ENTRYPOINT [ "python" ]
 # Run the deploy script
-CMD ["deploy.py" ]
+CMD ["-u","deploy.py" ]
