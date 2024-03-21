@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np
+import plotly.express as px
 
 curr_folder = "/".join(__file__.split("/")[:-1])
 
@@ -27,6 +28,7 @@ def prune_bad_emitters(data: pd.DataFrame, threshold=2500):
 
     emitters["CarbonFootprint"] = (emitters["total"] - 52814);
     emitters.head();
+    emitters = emitters.drop(columns=["30020_GHG_Emissions_Scope_1_Value", "30060_GHG_Emissions_Scope_2_Value", "30100_GHG_Emissions_Scope_3_Value", "total"]);
     emitters = emitters[emitters["CarbonFootprint"] < -threshold];
     print(len(emitters))
     return emitters;
@@ -37,6 +39,7 @@ def prune_big_wage_gaps(data, threshold=15):
     wage_gap = data['31050_Unadjusted_Gender_Pay_Gap_Value']
     wage_gap = pd.concat([wage_gap], axis=1).dropna();
     wage_gap["WageGap"] = (wage_gap["31050_Unadjusted_Gender_Pay_Gap_Value"]*100)
+    wage_gap = wage_gap.drop(columns=["31050_Unadjusted_Gender_Pay_Gap_Value"])
     wage_gap = wage_gap[wage_gap["WageGap"] < threshold]
     print(len(wage_gap))
     return wage_gap
@@ -73,7 +76,7 @@ def portfolio_optimization(criteria: dict[str, int]):
     return portfolio
 
 def rebalance(df: pd.DataFrame, c: str, v: int, n: int):
-    decay_rate = 2  # Determines the rate of exponential decay for weights
+    decay_rate = 1.1  # Determines the rate of exponential decay for weights
     print(n)
     # Sorts the dataframe rows from "best" to "worst" based on the criterion
     df = df.sort_values(by=c, ascending=True)
@@ -88,8 +91,34 @@ def rebalance(df: pd.DataFrame, c: str, v: int, n: int):
         pass  # Weights remain unchanged
     return df
 
-# Testing dataframe
-#data = pd.DataFrame({'isin': ['a', 'b', 'c', 'd', 'e'], 'environmental': [1, 2, 3, 4, 5], 'social': [5, 4, 3, 2, 1], 'governance': [4, 2, 1, 5, 3]}).set_index('isin')
 
-#display(portfolio_optimization(data, {'e': 0, 's': -1, 'g': -1}))
+def generate_flying_miles(portfolio: pd.DataFrame, value):
+    """Generates the flying miles for each company"""
+    e_eco_gain = portfolio["CarbonFootprint"].mul(portfolio["weight"]).sum();
+    flying_miles = -e_eco_gain * value/42420/6315;
+    return f"you saved enough emissions to have an airbus a380 fly {flying_miles}x times from Zürich to New York!";
 
+def generate_wage_gap(portfolio: pd.DataFrame):
+    """Generates the wage gap for each company"""
+    wage_gap = portfolio["WageGap"].mul(portfolio["weight"]).sum();
+    return f"The unadjusted wage gap in your portfolio {wage_gap}% is far better than the 18% here in Switzerland!";
+
+def generate_portfolio(criteria: dict[str, int], value):
+    portfolio = portfolio_optimization(criteria)
+    portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
+    htmlplots = list()
+    funfacts = list()
+    portfolio["scatter_size"] = (portfolio["weight"]  + 0.2)*2
+    portfolio["colors"] = 1-portfolio["weight"]
+    for c in criteria:
+        if c == "CarbonFootprint":
+            funfacts.append(generate_flying_miles(portfolio, value))
+            carbonfig = px.scatter(portfolio, y="weight", x="CarbonFootprint", size='scatter_size', color="colors", color_continuous_scale="Bluered_r", title="Carbon Footprint")
+            carbonfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Carbon Footprint (kgCO2e/€ invested)")
+            htmlplots.append(carbonfig.to_html(full_html=False, include_plotlyjs='cdn'))
+        if c == "WageGap":
+            funfacts.append(generate_wage_gap(portfolio))
+            wagefig = px.scatter(portfolio, y="weight", x="WageGap", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Wage Gap")
+            wagefig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Wage Gap (%)")
+            htmlplots.append(wagefig.to_html(full_html=False, include_plotlyjs='cdn'))
+    return funfacts, htmlplots, portfolio
