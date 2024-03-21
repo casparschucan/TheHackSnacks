@@ -1,0 +1,125 @@
+<head>
+
+  <link href="../style.css" rel="stylesheet">
+  <!-- title and icon  -->
+  <title> djfsdjfks </title>
+  <link rel="icon" href="../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!--- Font awesome Icons -->
+  <script src="https://kit.fontawesome.com/7ef560b061.js" crossorigin="anonymous"></script>
+  <!-- Animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+
+
+
+
+
+<body>
+
+<!-- intro --->
+<div class=" container">
+  <div class="elementToFadeInAndOut">
+    <h1>Choose your vision</h1>
+  </div>
+
+  <div class="wrap">
+    <h1>What are your aims?</h1>
+  </div>
+</div>
+
+
+<!-- click options on scroll // add fade class to eveyr scroll element--->
+
+
+
+<div class=" boxcontainer_funds">
+<!-- item1 - envo --->
+  <div class="box_funds fade " onclick="toggleImage(0)">
+    <img id="img0" src= "../media/select-0.png" width=300 >
+     <center><div style="font-size:20px">Sustainability</div>
+  </div>
+<!-- item2 - sus --->
+  <div class="box_funds fade" onclick="toggleImage(1)">
+    <img id="img1" src= "../media/select-1.png" width=300 >
+    <center><div id="img1" style="font-size:20px">Governance</div>
+  </div>
+<!-- item3 - gov --->
+  <div class="box_funds fade" onclick="toggleImage(2)">
+    <img id="img2" src= "../media/select-2.png" width=300 >
+    <center><div style="font-size:20px">Environment</div>
+  </div>
+</div>
+
+
+<!-- end with button --->
+
+<div class=" boxcontainer">
+
+  <div class="box fade">
+    <img src= "../media/sk_down.png" width=400 >
+  </div>
+<br><p></p><br>
+<a href="fund.html" class="button fade" >Next</a>
+<br><p></p><br>
+
+
+  </div>
+
+
+
+
+
+
+
+
+<!-- ==================================== JS ==================================== --->
+
+
+<!-- an event listener that changes the image source when an item is clicked
+ here to add selection info!!
+-->
+
+<script>
+  // initial setup, assume all are not selected!!!
+  let selected = [false, false, false];
+
+  function toggleImage(index) {
+      let imageElem = document.getElementById("img" + index);
+      if (selected[index]) {
+          // if currently selected, unselect by returning to the original image:
+          imageElem.src = "../media/select-" + index + ".png"; // change 'non_selected_image' part to whatever your file names are
+      }
+      else {
+          // if currently not selected, select by swapping in the new image:
+          imageElem.src = "../media/onselect-" + index + ".png"; // change 'selected_image' part to whatever your file names are
+      }
+      // toggle selection status for the clicked item
+      selected[index] = !selected[index];
+  }
+</script>
+
+
+
+<script>
+    var fadeElements = document.querySelectorAll('.fade');
+    window.addEventListener('scroll', fadeOnScroll);
+
+    function fadeOnScroll() {
+        fadeElements.forEach(function(el) {
+          if(el.getBoundingClientRect().top < window.innerHeight) {
+             el.classList.add('show');
+          } else {
+             el.classList.remove('show');
+          }
+        });
+    }
+
+    // Call the function initially to make sure elements are shown if already in view without scrolling
+    fadeOnScroll();
+</script>
+
+</body>
