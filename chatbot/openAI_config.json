@@ -1,0 +1,25 @@
+{
+    "openAIConfigs": [
+        { 
+            "configName": "australia1",
+            "urlBase": "https://sixopenaiplaygroundaue.openai.azure.com/",
+            "apiVersion": "2023-07-01-preview",
+            "model": "GPT-4-turbo",
+            "apiKey": "c84e124ee0444448a422708199b06ae3"
+        },
+        { 
+            "configName": "australia2",
+            "urlBase": "https://sixopenaiplaygroundaue.openai.azure.com/",
+            "apiVersion": "2023-07-01-preview",
+            "model": "GPT-4-turbo",
+            "apiKey": "aff5daeab39d469b8ee75aec15b44a40"
+        },
+        { 
+            "configName": "switzerland",
+            "urlBase": "https://sixopenaiplaygroundchn.openai.azure.com/",
+            "apiVersion": "2023-07-01-preview",
+            "model": "gpt-35-turbo",
+            "apiKey": "f0dea9c513954028b1181e9d7c42db61"
+        }
+    ]
+}
