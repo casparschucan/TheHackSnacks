@@ -68,6 +68,8 @@ def portfolio_optimization(criteria: dict[str, int]):
     n = portfolio.shape[0]
     portfolio['weight'] = 1 / n  # Initialize equal weights
     for c, v in criteria.items():
+        if not c in portfolio.columns:
+            continue
         portfolio = rebalance(portfolio, c, v, n)
     # Normalize weights to sum up to 1
     portfolio = portfolio.sort_values(by='weight', ascending=False)
