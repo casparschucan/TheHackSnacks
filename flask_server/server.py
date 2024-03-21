@@ -1,18 +1,27 @@
 import flask
 from flask import request, jsonify
 from backend.curate_data import get_viable_funds
+import copy
+import json
+from flask import session
 
 app = flask.Flask(__name__)
 
+@app.route('/media/<path:path>')
+def send_media(path):
+    return flask.send_from_directory('media', path)
+@app.route('/static/<path:path>')
+def send_static(path):
+    return flask.send_from_directory('static', path)
 
 @app.route('/')
 def index():
     return 'Hello, World!'
 
 
-@app.route('/visons')
+@app.route('/visions')
 def visons():
-    return flask.render_template('visons.html')
+    return flask.render_template('visions.html')
 
 @app.route('/goals/<vision_data>', methods=['GET'])
 def goals(vision_data):
@@ -35,11 +44,42 @@ def goals(vision_data):
     if S == '1':
         criteria.append('WageGap')
     if G == '1':
-        pass 
+        criteria.append('GreenSpace')
+        pass
 
+    serve_goals =  [
+                {
+                    "name": "CarbonFootprint",
+                    "image_path": "../media/coin7.png",
+                    "title": "I want to Help",
+                    "description1": "Reducing Carbon",
+                    "description2": "Emissions to Combat Climate Change",
+                },
+                {
+                    "name": "WageGap",
+                    "image_path": "../media/coin8.png",
+                    "title": "I want to Help",
+                    "description1": "Supporting the",
+                    "description2": "Elimination of Gender Wage Gap",
+                },
+                {
+                    "name": "GreenSpace",
+                    "image_path": "../media/coin4.png",
+                    "title": "I want to Help",
+                    "description1": "Planting Trees to",
+                    "description2": "Restore Green Space",
+                }
+            ]
+    not_serve_goals = copy.deepcopy(serve_goals) #copy
+    #filter the serve goals
+    serve_goals = [goal for goal in serve_goals if goal['name'] in criteria]
+    not_serve_goals = [goal for goal in not_serve_goals if goal['name'] not in criteria]
     data = {
         "criteria": criteria,
+        "goals": serve_goals,
+        "not_goals": not_serve_goals
     }
+    print(not_serve_goals)
 
     return flask.render_template('goals.html', data=data)
 
@@ -47,8 +87,21 @@ def goals(vision_data):
 def chat():
     return flask.render_template('chat.html')
 
+@app.route('/api/chat_message/', methods=['POST'])
+def chat_message():
+    #TODO: parse string to json
+    data = request.get_json()
+    #read data from post
+    message = data['message']
+    session_id = data['session_id']
+    
+    # pass this to the backend
+    #return jsonify({"message": message, "session_id": session_id})
+    return 
+    
 @app.route('/profile')
-
+def profile():
+    return flask.render_template('profile.html')
 
 def run_server():
     app.run(host='0.0.0.0', port=5000, debug=True)
