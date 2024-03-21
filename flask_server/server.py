@@ -103,5 +103,13 @@ def chat_message():
 def profile():
     return flask.render_template('profile.html')
 
+@app.route('/overview/<portfolio_data>', methods=['GET'])
+def overview(portfolio_data):
+    print(portfolio_data)
+
+    return flask.render_template('overview.html')
+
+
+
 def run_server():
     app.run(host='0.0.0.0', port=5000, debug=True)

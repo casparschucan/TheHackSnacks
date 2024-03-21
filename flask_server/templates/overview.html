@@ -1,0 +1,138 @@
+<head>
+
+  <link href="/static/style.css" rel="stylesheet">
+  <!-- title and icon  -->
+  <title> djfsdjfks </title>
+  <link rel="icon" href="../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!--- Font awesome Icons -->
+  <script src="https://kit.fontawesome.com/7ef560b061.js" crossorigin="anonymous"></script>
+  <!-- Animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+
+
+
+<body>
+
+
+  <!-- intro --->
+
+    <div class=" container">
+      <div class="wrap2">
+        <center>
+        <h1>Welcome </h1>
+        <p style="line-height: 30px;color:grey;">
+        Here you will have an overview on your choices,
+        <br> goals and dreams..ndskfdsflkdskdslkfmkdsfmk<br>
+        ajdksdlksdlksdmlksfdsfmlkdsk
+
+        <p></p>
+
+        below you will find all your recent investment
+
+      </div>
+    </div>
+
+
+    <center>
+      <img  class="fade" src="../media/sk_down.png" width="300" style="z-index:-1;"><br>
+      <img class="fade" src="../media/mon2.png" width="300" style="z-index:-1;">
+    </center>
+    <img  class="fade" src="../media/mon.png" width="200" style="position:absolute;left:50px;z-index:-1;">
+    <img  class="fade" src="../media/mon3.png" width="200" style="position:absolute; right:100; z-index:-1;">
+
+
+  <div class=" boxcontainer">
+      <div class="boxfund fade">
+        <center>
+        <img src= "../media/coin7.png" width="250">
+        <p class="quiz"><u>I want to Help</u> <br>Reducing Carbon <br>Emissions to Combat Climate Change </p>
+        <br>
+        <a href="#" class="button" >details</a>
+      </div>
+
+      <br><p></p><br>
+      <div class="whitespace fade">
+        <img class="fade" src="../media/coin3.png" width=300">
+
+      </div>
+      <br><p></p><br>
+
+
+      <div class="boxfund fade">
+        <center>
+        <img src= "../media/coin8.png" width="250">
+          <p class="quiz"><u>I want to Help</u> <br>Supporting the <br>Elimination of Gender Wage Gap </p>
+          <br>
+          <a href="#" class="button" >details</a>
+      </div>
+
+
+
+
+      <br><p></p><br>
+      <div class="whitespace fade">
+        <img class="fade" src="../media/coin3.png" width=300">
+      </div>
+      <br><p></p><br>
+
+
+
+      <div class="boxfund fade">
+        <center>
+        <img src= "../media/coin4.png" width="250">
+          <p class="quiz"><u>I want to Help</u> <br>Planting Trees to <br>Restore Green Space</p>
+          <br>
+          <a href="#" class="button">details</a>
+      </div>
+
+
+      <br><p></p><br>
+      <div class="whitespace fade">
+
+        <img class="fade" src="../media/coin3.png" width=300">
+
+      </div>
+
+
+      <center>
+        <br>
+        <p></p>
+        <img class="fade" src="../media/f1.png" width=300 style="z-index:-1;">
+      </center>
+
+
+      <!-- next button --->
+      <br><p></p><br>
+      <a  class="button fade" >Load More</a>
+      <br><p></p><br>
+  </div>
+
+
+
+
+<!-- ==================================== JS ==================================== --->
+    <script>
+        var fadeElements = document.querySelectorAll('.fade');
+        window.addEventListener('scroll', fadeOnScroll);
+
+        function fadeOnScroll() {
+            fadeElements.forEach(function(el) {
+              if(el.getBoundingClientRect().top < window.innerHeight) {
+                 el.classList.add('show');
+              } else {
+                 el.classList.remove('show');
+              }
+            });
+        }
+
+        // Call the function initially to make sure elements are shown if already in view without scrolling
+        fadeOnScroll();
+    </script>
+
+
+</body>
