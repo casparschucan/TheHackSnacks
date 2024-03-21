@@ -36,7 +36,7 @@ def prune_big_wage_gaps(data, threshold=15):
     #Get entries for which all 3 scope entries are available
     wage_gap = data['31050_Unadjusted_Gender_Pay_Gap_Value']
     wage_gap = pd.concat([wage_gap], axis=1).dropna();
-    wage_gap["WageGap"] = (-wage_gap["31050_Unadjusted_Gender_Pay_Gap_Value"]*100)
+    wage_gap["WageGap"] = (wage_gap["31050_Unadjusted_Gender_Pay_Gap_Value"]*100)
     wage_gap = wage_gap[wage_gap["WageGap"] < threshold]
     print(len(wage_gap))
     return wage_gap
