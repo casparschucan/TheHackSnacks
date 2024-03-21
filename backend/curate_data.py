@@ -36,7 +36,7 @@ def prune_big_wage_gaps(data, threshold=15):
     #Get entries for which all 3 scope entries are available
     wage_gap = data['31050_Unadjusted_Gender_Pay_Gap_Value']
     wage_gap = pd.concat([wage_gap], axis=1).dropna();
-    wage_gap["WageGap"] = (wage_gap["31050_Unadjusted_Gender_Pay_Gap_Value"]*100)
+    wage_gap["WageGap"] = (-wage_gap["31050_Unadjusted_Gender_Pay_Gap_Value"]*100)
     wage_gap = wage_gap[wage_gap["WageGap"] < threshold]
     print(len(wage_gap))
     return wage_gap
@@ -67,15 +67,16 @@ def portfolio_optimization(criteria: dict[str, int]):
     for c, v in criteria.items():
         portfolio = rebalance(portfolio, c, v, n)
     # Normalize weights to sum up to 1
+    portfolio = portfolio.sort_values(by='weight', ascending=False)
+    portfolio = portfolio[:30]
     portfolio['weight'] /= portfolio['weight'].sum()
     return portfolio
 
 def rebalance(df: pd.DataFrame, c: str, v: int, n: int):
     decay_rate = 2  # Determines the rate of exponential decay for weights
-    coldict = {'e': ('environmental', False), 's': ('social', False), 'g': ('governance', False)}
     print(n)
     # Sorts the dataframe rows from "best" to "worst" based on the criterion
-    df = df.sort_values(by=coldict[c][0], ascending=coldict[c][1])
+    df = df.sort_values(by=c, ascending=True)
 
     if v == 1:  # High importance: exponential decay
         weights = np.array([np.exp(-decay_rate * i) for i in range(n)])
