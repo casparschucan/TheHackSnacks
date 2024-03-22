@@ -1,0 +1,138 @@
+<head>
+
+  <link href="/static/style.css" rel="stylesheet">
+  <!-- title and icon  -->
+  <title> Goals </title>
+  <link rel="icon" href="../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!--- Font awesome Icons -->
+  <script src="https://kit.fontawesome.com/7ef560b061.js" crossorigin="anonymous"></script>
+  <!-- Animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+
+
+<body>
+
+<!-- intro -->
+  <div class=" container">
+    <div class="wrap2">
+      <h1>We found some stuff for you</h1>
+    </div>
+  </div>
+
+  <!-- funds scroll
+
+  reduce carbon
+  wage gap gender gap
+  -->
+
+<div class=" boxcontainer">
+    <!-- chosen ones-->
+    {% for ci in data.goals %}
+
+        <div class="boxfund  fade" id = {{ci.name}}>
+        <center>
+            <img src="{{ ci.image_path }}" width="250">
+            <p class="quiz"><u>{{ ci.title }}<br>{{ ci.description1 }}<br>{{ ci.description2 }}</u></p>
+            <br>
+            <a class="button selected" onclick="toggleClass(this, 'selected')">select</a>
+            <a href="#" class="button">more</a>
+        </center>
+        </div>
+        <br><p></p><br>
+    {% endfor %}
+
+    <!-- next button -->
+    <br><p></p><br>
+    <button class="button fade" onclick="go_to_ai()">Next</button>
+    <br><p></p><br>
+    some more
+
+    <!-- not chosen ones -->
+    {% for ci in data.not_goals %}
+
+        <div class="boxfund fade" id = {{ci.name}}>
+        <center>
+            <img src="{{ ci.image_path }}" width="250">
+            <p class="quiz"><u>{{ ci.title }}<br>{{ ci.description1 }}<br>{{ ci.description2 }}</u></p>
+            <br>
+            <a class="button" onclick="toggleClass(this, 'selected')">select</a>
+            <a href="#" class="button">more</a>
+        </center>
+        </div>
+        <br><p></p><br>
+    {% endfor %}
+    
+</div>
+
+
+<!-- ==================================== JS ==================================== -->
+
+<script>
+  function toggleClass(element, className) {
+    if (!element || !className){
+      return;
+    }
+
+    var classString = element.className, nameIndex = classString.indexOf(className);
+    if (nameIndex == -1) {
+      classString += ' ' + className;
+    }
+    else {
+      classString = classString.substr(0, nameIndex) + classString.substr(nameIndex + className.length);
+    }
+    element.className = classString;
+  }
+</script>
+
+
+
+<script>
+        var fadeElements = document.querySelectorAll('.fade');
+        window.addEventListener('scroll', fadeOnScroll);
+
+        function fadeOnScroll() {
+            fadeElements.forEach(function(el) {
+              if(el.getBoundingClientRect().top < window.innerHeight) {
+                 el.classList.add('show');
+              } else {
+                 el.classList.remove('show');
+              }
+            });
+        }
+
+        // Call the function initially to make sure elements are shown if already in view without scrolling
+        fadeOnScroll();
+    </script>
+    <script>
+        function findSelectedDivs() {
+            const selectedButtons = document.querySelectorAll(".button.selected");
+            const selectedDivIds = [];
+
+            for (const button of selectedButtons) {
+                // Get the parent element (assuming the button is inside the div's child)
+                const parentDiv = button.parentElement.parentElement;
+                // Check if the parent element is a div and has an ID
+                if (parentDiv.tagName === "DIV" && parentDiv.id) {
+                    selectedDivIds.push(parentDiv.id);
+                }
+            }
+
+            return selectedDivIds;
+        }
+        function go_to_ai() {
+            const selectedDivIds = findSelectedDivs();
+            console.log(selectedDivIds);
+            // Send the selected div IDs to the AI
+            // ...
+            //redirect to the next page
+            //window.location.href = "/ai";
+            window.location.href = "/forms"
+        }
+    </script>
+
+</body>

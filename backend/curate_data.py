@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 
-
+curr_folder = "/".join(__file__.split("/")[:-1])
 
 # Load the data
 def load_data() -> pd.DataFrame:
     """Loads the ESG data from the csv file provided by SIX"""
-    return pd.read_csv("../ESG/EUESGMANUFACTURER.csv")
+    return pd.read_csv(f"{curr_folder}/../ESG/EUESGMANUFACTURER.csv")
 
 def pivot_data(data: pd.DataFrame) -> pd.DataFrame:
     # Reshape the data
@@ -44,6 +44,20 @@ def prune_big_wage_gaps(data, threshold=15):
     print(len(wage_gap))
     return wage_gap
 
+
+def prune_no_diversity(data, threshold=20):
+    """Removes companies with a low diversity from dataframe"""
+    #Get entries for which all 3 scope entries are available
+    diversity = pd.concat([data['31090_Board_Gender_Diversity_Value']], axis=1).dropna();
+    diversity["BoardDiversity_raw"] = (diversity["31090_Board_Gender_Diversity_Value"]*100)
+    diversity = diversity.drop(columns=["31090_Board_Gender_Diversity_Value"]);
+    diversity = diversity[diversity["BoardDiversity_raw"] >= threshold]
+    diversity = diversity[diversity["BoardDiversity_raw"] < 100 - threshold]
+    diversity["BoardDiversity"] = abs(diversity["BoardDiversity_raw"] - 50);
+    print(len(diversity))
+    return diversity
+
+        
 
 def prune_no_diversity(data, threshold=20):
     """Removes companies with a low diversity from dataframe"""
@@ -129,26 +143,21 @@ def generate_board_diversity(portfolio: pd.DataFrame):
 
 def generate_portfolio(criteria: dict[str, int], value):
     portfolio = portfolio_optimization(criteria)
-    htmlplots = list()
-    funfacts = list()
+    htmlplots = dict()
+    funfacts = dict()
     portfolio["scatter_size"] = (portfolio["weight"]  + 0.2)*2
     portfolio["colors"] = 1-portfolio["weight"]
-    for c in criteria:
+    for c in criteria.keys():
+        print(c)
         if c == "CarbonFootprint":
             portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
-            funfacts.append(generate_flying_miles(portfolio, value))
+            funfacts[c] = (generate_flying_miles(portfolio, value))
             carbonfig = px.scatter(portfolio, y="weight", x="CarbonFootprint", size='scatter_size', color="colors", color_continuous_scale="Bluered_r", title="Carbon Footprint")
             carbonfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Carbon Footprint (kgCO2e/€ invested)")
-            htmlplots.append(carbonfig.to_html(full_html=False, include_plotlyjs='cdn'))
+            htmlplots[c] = carbonfig.to_html(full_html=False, include_plotlyjs='cdn')
         if c == "WageGap":
-            funfacts.append(generate_wage_gap(portfolio))
+            funfacts[c] = generate_wage_gap(portfolio)
             wagefig = px.scatter(portfolio, y="weight", x="WageGap", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Wage Gap")
             wagefig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Wage Gap (%)")
-            htmlplots.append(wagefig.to_html(full_html=False, include_plotlyjs='cdn'))
-        if c == "BoardDiversity":
-            funfacts.append(generate_board_diversity(portfolio))
-            diversityfig = px.scatter(portfolio, y="weight", x="BoardDiversity_raw", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Board Diversity")
-            diversityfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="female to male ratio on boards (%)")
-            htmlplots.append(diversityfig.to_html(full_html=False, include_plotlyjs='cdn'))
-
+            htmlplots[c] = wagefig.to_html(full_html=False, include_plotlyjs='cdn')
     return funfacts, htmlplots, portfolio

@@ -8,6 +8,7 @@ import os
 from openai import AzureOpenAI
 import json
 import pandas as pd
+import json
 
 
 #Make role strings
@@ -19,6 +20,7 @@ You are Turing, an investment advisor for sustainable investments targeted at Ge
 Possible evaluations: some number of CHF. When asking for this, provide several ranges for the user to choose one from. In the end you will have to convert the ranges into a single number.
 
 The user must specify 1) their risk taking behavior and 2) their affinity for Environmental, Social, and Governance related concerns respectively.
+the user must specity those values by answering in the format of a number between -1 and 1. 1 means that the user is very risk-taking or values sustainability very highly, 0 means that the user is somewhat risk-taking or values sustainability somewhat highly, and -1 means that the user is very risk-averse or values sustainability very little.
 
 So for each of the ESG dimensions, you must be able to elicit the following:
 - Does the user value only sustainability <for the particular ESG dimension>, a mix of risk-adjusted returns and sustainability, or mostly mostly risk-adjusted returns?
@@ -29,9 +31,9 @@ Possible evaluations: 1 if "Risk-Taker" (someone who is willing to take signific
 
 Keep in mind that the target audience is Gen-Z. Make relatable examples and keep the language simple and engaging. Directly address the user in second person and try to be sociable and likeable. Do not ask any questions that are not aimed at extracting the specified information after you have introduced yourself in the first message. Each question must be targeted to filling in the missing information but can be a creative attempt to make answeing the question easier for the user.
 
-Before asking your first question, you must greet the user and introduce yourself as Turing from sus.fund, the first goal-based sustainable investment fund. Inform the user that you will help them identify their sustainability goals and to sus out the specific objectives they might have.
 """
 
+#Before asking your first question, you must greet the user and introduce yourself as Turing from sus.fund, the first goal-based sustainable investment fund. Inform the user that you will help them identify their sustainability goals and to sus out the specific objectives they might have.
 
 #ExtractorGPT
 extractor_role = """
@@ -40,41 +42,56 @@ You are a data extraction specialist tasked with extracting data from a natural 
 - The user's affinity for Environmental, Social, and Governance related concerns
 - The amount of money the user wants to invest
 
-The format of the .json file must be as follows:
+If not all data is contained return a .json string with the following structure
 {
-    "risk_taking_behavior": <risk-taking behavior integer>,
-    "esg_affinity_environmental": <environmental affinity integer>,
-    "esg_affinity_social": <social affinity integer>,
-    "esg_affinity_governance": <governance affinity integer>
-    "investment_amount": <investment amount integer>
+    "extraction": "incomplete"
+}
+
+If all fields can be filled, the format of the .json file must be as follows.
+{
+    "risk_taking_behavior": <risk-taking behavior integer> (defaults to None),
+    "esg_affinity_environmental": <environmental affinity integer> (defaults to None),
+    "esg_affinity_social": <social affinity integer> (defaults to None),
+    "esg_affinity_governance": <governance affinity integer> (defaults to None)
+    "investment_amount": <investment amount integer> (defaults to None)
 }
 
 Legal values for the risk_taking_behavior are integer 1 to categorize someone as a "Risk-Taker", integer 0 to categorize someone as "Risk-Averse", and integer -1 to categorize someone as "Risk-Fearing".
 Legal values for the esg_affinity entries are integer 1 to categorize someone as "Saint", integer 0 to categorize someone as "Normie", integer -1 to categorize someone as "Homo-oeconomicus"
 Legal values for the investment amount are positive integers to represent a CHF amount (round up to nearest whole CHF if necessary). In case the user mentions a different currency, just ignore their currency wishes.
+
 """
+
+extractor_role_alt = """
+    You are tasked with extracting the answers of a user in a conversation with a chat bot. 
+    You will evaluate what question was asked from the pool: 
+        - risk_taking_behaviour
+        - esg_affinity_environmental
+        - esg_affinity_social
+        - esg_affinity_governance
+        - investment_amount
+    Possible answers for the categories are:
+        - risk_taking_behaviour
+            - 1: risk taker
+            - 0: moderate risk
+            - -1: risk averse
+        - 
+    
+    Expected output:
+    {
+        "question" : "risk_taking_behaviour",
+        "answer" : -1
+    }
+"""
+
+
 #extractor_role = """Just ouput a json string containing number as a key and 4 as a value"""
 
-'''
-If a user's answer allows you to fill out sustainability vs. profit trade-off for more than one sustainability dimension, take note of that quietly.
 
-Your goal is to fill the following matrix:
-
-|                                   | Environmental Sustainability | Social Sustainability | Governance Sustainability |
-|-----------------------------------|------------------------------|----------------------|---------------------------|
-| Risk Taking Behavior              |                              |                      |                           |
-| Sustainability Trade-off          |                              |                      |                           |
-
-
-You will rephrase the users answer and ascribe one of the possible values for each cell in the matrix (which the user shall not see) and ask to confirm. Keep yourself short in those confirmation requests.
-
-After each question, you will have to check if the user's answer was good. If it was, you will proceed to the next question. If it wasn't, you will have to ask a similar question again in order o fill the value in the matrix. You will have to do this until the user's answer is good.
-Once you have all the necessary information, ouput "<END OF CONVERSATION>" verbatim with no other information.
-, and once you have all the data points you need you should end the conversation by outputting "<END OF CONVERSATION>" verbatim with no other information.
-'''
+curr_folder = "/".join(__file__.split('/')[:-1])
 
 #Setup and Config
-with open(r'openAI_config.json') as config_file:
+with open(curr_folder + "/" + r'openAI_config.json') as config_file:
     openAI_config = json.load(config_file)
 
 my_config = openAI_config['openAIConfigs'][2]
@@ -90,7 +107,7 @@ message_histories = {}
 def setup():
     # Load config values
 
-    print(f"use openAI config {my_config['configName']}")
+    #print(f"use openAI config {my_config['configName']}")
 
 
     client = AzureOpenAI(
@@ -124,7 +141,7 @@ def ask(client, session_id, data):
     response = client.chat.completions.create(
             model=chatgpt_model_name,
             messages=curr_mh,
-            max_tokens=150,
+            max_tokens=200,
             temperature=0.7,
             #stop=["\n"],
         )
@@ -149,7 +166,7 @@ def make_intent(survey_data,mode):
                 topics.append(key)
 
         intent_str += role_asker
-        intent_str += f"The topics you still need to probe are {topics}"
+        #intent_str += f"The topics you still need to probe are {topics}"
         pass
     elif mode=='extract':
         intent_str += extractor_role
@@ -162,13 +179,16 @@ def make_intent(survey_data,mode):
 def update_data(client,session_id,data):
     curr_mh = message_histories.get(session_id, [])
 
-    #
-    curr_mh = [i for i in curr_mh if i['role']!='system']
-    
+    #removes previous system message
+    #curr_mh = [i for i in curr_mh if i['role']!='system']
+
+    # get last two messages
+    #curr_mh = curr_mh[-2:]
+
     curr_mh.append(
         {"role": "system", "content": make_intent(data,mode='extract')}
     )
-    print(curr_mh)
+    #print(curr_mh)
     response = client.chat.completions.create(
             model=chatgpt_model_name,
             messages=curr_mh,
@@ -178,8 +198,13 @@ def update_data(client,session_id,data):
         )
     
     text_response = response.choices[0].message.content
+    print(text_response)
     try:
         out=json.loads(text_response)
+        # check if out contains the key extraction
+        if 'extraction' in out.keys():
+            return data
+
     except: 
 
         print('Response not in json format')
@@ -190,7 +215,7 @@ def update_data(client,session_id,data):
     #only update the data if the value in data was none
     
     for key,value in data.items():
-        if value==None:
+        if value is None:
             data[key]=out.get(key,None)
 
     return data
@@ -211,7 +236,10 @@ def handle_user_message(session_id, message, first_message=False):
     }
     
     #check if this is the first message
+    if session_id not in message_histories.keys():
+        first_message = True
     if first_message:
+        #TODO: FIXME
         message_histories[session_id] = []
         
         question = ask(client,session_id,survey_data)
@@ -220,6 +248,8 @@ def handle_user_message(session_id, message, first_message=False):
 
     else:
         #Deal with the user message
+
+
 
         #update the data
         survey_data=update_data(client,session_id,survey_data)
@@ -231,6 +261,7 @@ def handle_user_message(session_id, message, first_message=False):
             return question
         else:
             #end the conversation
+            print(survey_data)
             return "<END OF CONVERSATION>"
 
 
@@ -240,6 +271,7 @@ def is_incomplete(dictionary):
     for key in dictionary.keys():
         if dictionary[key] == None:
             return True
+    return False
    
 def loop(data):
     while is_incomplete(data):

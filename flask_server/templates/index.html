@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <!-- Title -->
+  <title>Sus Fund</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <!-- FONT - Fira Sans  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!-- Style Sheets -->
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://unpkg.com/pattern.css" rel="stylesheet">
+  <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+  <!-- Animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Madimi+One&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+
+
+
+</head>
+
+
+<style>
+
+body {
+  background-color:black;
+  font-family: "Fira Sans";
+  background-image:url("");
+  background-size: cover;
+
+}
+
+/* bg */
+.myVideo {
+  position: fixed;
+  filter: grayscale(100%);
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+
+.container {
+
+    height: 100vh;  /* full-screen, change as per requirement */
+    display: flex;
+    justify-content: center;  /* center horizontally */
+    align-items: center;  /* center vertically */
+    position: relative;
+}
+
+
+.title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family:"Fira Sans";
+      font-weight: 1000;
+      font-size:45px;
+      color:black;
+      -webkit-text-stroke: 1px white;
+}
+
+
+
+.noise-overlay {
+          background-image: url('media/noise.png'); /* Path to your noise.png image */
+          background-size: cover; /* Cover the background */
+          background-repeat: no-repeat; /* Do not repeat the background image */
+          position: fixed; /* Fix the position */
+          top: 0; /* Start from the top of the page */
+          left: 0; /* Start from the left of the page */
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          z-index: 0; /* Overlay over everything */
+          pointer-events: none; /* Allow clicks through the overlay */
+          opacity: 10%;
+        }
+
+
+</style>
+
+
+<!-- ================== MAIN Body/Page ==================== --->
+
+
+<body>
+
+<!-- Main Page
+
+<video autoplay muted loop class="myVideo" style="z-index: -1;">
+  <source src="media/video.mp4" type="video/mp4">
+</video>-->
+
+<div class="noise-overlay"></div>
+
+<div class="container">
+  <img id="imgmain" src="media/mon.png" height=500 style="z-index: -1;">
+  <img src="media/doodle.png" height=500 style="position: fixed;
+  ">
+  <div class="fix-stroke title">
+  <center>Lost with Funds <br>and aiming for goals?</center></div>
+  <a href="/visions" class="button" style="position: absolute;">Let us help you</a>
+</div>
+
+
+</body>
