@@ -165,7 +165,7 @@ def overview():
     #high, mid, low to int
     parse_dict = {
         'high': 1,
-        'mid': 0,
+        'medium': 0,
         'low':-1 
     }
 
