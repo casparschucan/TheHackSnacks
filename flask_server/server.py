@@ -108,11 +108,42 @@ def overview(portfolio_data):
     print(portfolio_data)
     raw_input_data = json.loads(portfolio_data)
     value = raw_input_data['value']
-    del dictionary['value']
-    funfacts, plots, portfolio = generate_portfolio(dictionary, value)
+    del raw_input_data['value']
 
+    funfacts, plots, portfolio = generate_portfolio(raw_input_data, value)
+
+    data = {
+            "goals": [
+                {
+                    "name": "CarbonFootprint",
+                    "image_path": "../media/coin7.png",
+                    "title": "I want to Help",
+                    "description1": "Reducing Carbon",
+                    "description2": "Emissions to Combat Climate Change",
+                    "funfact": funfacts['CarbonFootprint']
+                    "plot": plots['CarbonFootprint']
+                },
+                {
+                    "name": "WageGap",
+                    "image_path": "../media/coin7.png",
+                    "title": "I want to Help",
+                    "description1": "Reducing Wage Gap",
+                    "funfact": funfacts['WageGap']
+                    "plot": plots['WageGap']
+                },
+                {
+                    "name": "BoardDiversity",
+                    "image_path": "../media/coin7.png",
+                    "title": "I want to Help",
+                    "description1": "Increasing Board Diversity",
+                    "funfact": funfacts['BoardDiversity']
+                    "plot": plots['BoardDiversity']
+                }
+                
+            ],
+        }
     
-    return flask.render_template('overview.html')
+    return flask.render_template('overview.html', data=data)
 
 
 

@@ -108,19 +108,19 @@ def generate_wage_gap(portfolio: pd.DataFrame):
 def generate_portfolio(criteria: dict[str, int], value):
     portfolio = portfolio_optimization(criteria)
     portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
-    htmlplots = list()
-    funfacts = list()
+    htmlplots = dict()
+    funfacts = dict()
     portfolio["scatter_size"] = (portfolio["weight"]  + 0.2)*2
     portfolio["colors"] = 1-portfolio["weight"]
     for c in criteria:
         if c == "CarbonFootprint":
-            funfacts.append(generate_flying_miles(portfolio, value))
+            funfacts[c] = (generate_flying_miles(portfolio, value))
             carbonfig = px.scatter(portfolio, y="weight", x="CarbonFootprint", size='scatter_size', color="colors", color_continuous_scale="Bluered_r", title="Carbon Footprint")
             carbonfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Carbon Footprint (kgCO2e/€ invested)")
-            htmlplots.append(carbonfig.to_html(full_html=False, include_plotlyjs='cdn'))
+            htmlplots[c] = carbonfig.to_html(full_html=False, include_plotlyjs='cdn')
         if c == "WageGap":
-            funfacts.append(generate_wage_gap(portfolio))
+            funfacts[c] = generate_wage_gap(portfolio)
             wagefig = px.scatter(portfolio, y="weight", x="WageGap", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Wage Gap")
             wagefig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Wage Gap (%)")
-            htmlplots.append(wagefig.to_html(full_html=False, include_plotlyjs='cdn'))
+            htmlplots[c] = wagefig.to_html(full_html=False, include_plotlyjs='cdn')
     return funfacts, htmlplots, portfolio

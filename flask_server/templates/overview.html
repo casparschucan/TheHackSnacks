@@ -47,6 +47,28 @@
 
 
   <div class=" boxcontainer">
+      {% for ci in data.goals:e %}
+            diversityfig.show()
+
+          <div class="boxfund  fade" id = {{ci.name}}>
+          <center>
+              <img src="{{ ci.image_path }}" width="250">
+              <p class="quiz"><u>{{ ci.title }}<br>{{ ci.description1 }}<br>{{ ci.description2 }}</u></p>
+              <br>
+              <a class="button selected" onclick="toggleClass(this, 'selected')">select</a>
+              <a href="#" class="button">more</a>
+          </center>
+          </div>
+          <br><p></p><br>
+
+          <br><p></p><br>
+          <div class="whitespace fade">
+            {{ci.plot}}
+            <div>{{ ci.funfact }}</div>
+          </div>
+          <br><p></p><br>
+      {% endfor %}
+
       <div class="boxfund fade">
         <center>
         <img src= "../media/coin7.png" width="250">
