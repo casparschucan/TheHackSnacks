@@ -109,7 +109,7 @@ def portfolio_optimization(criteria: dict[str, int]):
     return portfolio
 
 def rebalance(df: pd.DataFrame, c: str, v: int, n: int):
-    decay_rate = 1.1  # Determines the rate of exponential decay for weights
+    decay_rate = 1.02  # Determines the rate of exponential decay for weights
     print(n)
     # Sorts the dataframe rows from "best" to "worst" based on the criterion
     df = df.sort_values(by=c, ascending=True)
