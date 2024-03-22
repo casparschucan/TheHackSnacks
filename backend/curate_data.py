@@ -160,4 +160,9 @@ def generate_portfolio(criteria: dict[str, int], value):
             wagefig = px.scatter(portfolio, y="weight", x="WageGap", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Wage Gap")
             wagefig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Wage Gap (%)")
             htmlplots[c] = wagefig.to_html(full_html=False, include_plotlyjs='cdn')
+        if c == "BoardDiversity":
+            funfacts[c] = generate_board_diversity(portfolio)
+            boardfig = px.scatter(portfolio, y="weight", x="BoardDiversity_raw", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Board Diversity")
+            boardfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Board Diversity (%)")
+            htmlplots[c] = boardfig.to_html(full_html=False, include_plotlyjs='cdn')
     return funfacts, htmlplots, portfolio
