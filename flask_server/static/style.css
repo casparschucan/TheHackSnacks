@@ -242,7 +242,7 @@ nav ul li a {
    height: 500px;
    background-color:white;
    justify-content: center;
-   padding: 20;
+   padding: 20px;
    display: flex;
    flex-flow: column nowrap;
    align-items: center;
