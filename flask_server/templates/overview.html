@@ -48,15 +48,13 @@
 
   <div class=" boxcontainer">
       {% for ci in data.goals %}
-            diversityfig.show()
 
           <div class="boxfund  fade" id = {{ci.name}}>
           <center>
               <img src="{{ ci.image_path }}" width="250">
-              <p class="quiz"><u>{{ ci.title }}<br>{{ ci.description1 }}<br>{{ ci.description2 }}</u></p>
+              <p class="quiz"><u>{{ ci.title }}</u><br>{{ ci.description1 }}<br>{{ ci.description2 }}</p>
               <br>
-              <a class="button selected" onclick="toggleClass(this, 'selected')">select</a>
-              <a href="#" class="button">more</a>
+              <a class="button selected">details</a>
           </center>
           </div>
           <br><p></p><br>
@@ -64,6 +62,7 @@
           <br><p></p><br>
           <div class="whitespace fade">
             {{ci.plot | safe}}
+            <br>
             <div class="funfact">{{ ci.funfact }}</div>
           </div>
           <br><p></p><br>

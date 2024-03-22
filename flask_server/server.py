@@ -197,7 +197,7 @@ def overview():
                 },
                 {
                     "name": "WageGap",
-                    "image_path": "../media/coin7.png",
+                    "image_path": "../media/coin8.png",
                     "title": "I want to Help",
                     "description1": "Reducing Wage Gap",
                     "funfact": funfacts.get('WageGap',''),
@@ -205,7 +205,7 @@ def overview():
                 },
                 {
                     "name": "BoardDiversity",
-                    "image_path": "../media/coin7.png",
+                    "image_path": "../media/coin4.png",
                     "title": "I want to Help",
                     "description1": "Increasing Board Diversity",
                     "funfact": funfacts.get('BoardDiversity',''),

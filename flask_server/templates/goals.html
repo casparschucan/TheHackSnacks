@@ -37,7 +37,7 @@
         <div class="boxfund  fade" id = {{ci.name}}>
         <center>
             <img src="{{ ci.image_path }}" width="250">
-            <p class="quiz"><u>{{ ci.title }}<br>{{ ci.description1 }}<br>{{ ci.description2 }}</u></p>
+            <p class="quiz"><u>{{ ci.title }}</u><br>{{ ci.description1 }}<br>{{ ci.description2 }}</p>
             <br>
             <a class="button selected" onclick="toggleClass(this, 'selected')">select</a>
             <a href="#" class="button">more</a>
@@ -50,7 +50,8 @@
     <br><p></p><br>
     <button class="button fade" onclick="go_to_ai()">Next</button>
     <br><p></p><br>
-    some more
+    
+    <h1>See More...</h1>
 
     <!-- not chosen ones -->
     {% for ci in data.not_goals %}
