@@ -4,6 +4,9 @@ from backend.curate_data import get_viable_funds
 import copy
 import json
 from flask import session
+import uuid
+
+import chatbot.chatbot as chatbot
 
 app = flask.Flask(__name__)
 
@@ -94,10 +97,31 @@ def chat_message():
     #read data from post
     message = data['message']
     session_id = data['session_id']
+    first_message = data['first_message']
+
+
+
+    if session_id is None:
+        #setup session id
+        # set to random id
+        session_id = str(uuid.uuid4())
+
+
+    print(message)
+    print(session_id)
+    print(first_message)
     
-    # pass this to the backend
-    #return jsonify({"message": message, "session_id": session_id})
-    return 
+    #client = chatbot.setup()
+
+    question = chatbot.handle_user_message(session_id, message, first_message)
+
+    # setup return dict
+    return_dict = {
+        "message": question,
+        "session_id": session_id
+    }
+
+    return return_dict
     
 @app.route('/profile')
 def profile():
