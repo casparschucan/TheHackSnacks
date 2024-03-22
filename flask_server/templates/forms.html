@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Preferences</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Investment Preference Form</h1>
+    <!--<form action="javascript:submitInvestmentData()" >-->
+    <form id="investmentForm" action="/overview/" method="POST">
+        <label for="investment">Investment Amount:</label>
+        <input type="number" id="investment" name="investment" min="0" required> $<br><br>
+
+        <label for="risk">Risk Tolerance (Low to High):</label>
+        <select id="risk" name="risk" required>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select><br><br>
+
+        <fieldset>
+            <legend>Importance of ESG Investing:</legend>
+            <label for="env">Environmental:</label>
+            <input type="radio" id="env" name="env" value="high" checked> Very Important
+            <input type="radio" id="env" name="env" value="medium"> Somewhat Important
+            <input type="radio" id="env" name="env" value="low"> Not Important<br>
+
+            <label for="social">Social:</label>
+            <input type="radio" id="social" name="social" value="high" checked> Very Important
+            <input type="radio" id="social" name="social" value="medium"> Somewhat Important
+            <input type="radio" id="social" name="social" value="low"> Not Important<br>
+
+            <label for="governance">Governance:</label>
+            <input type="radio" id="governance" name="governance" value="high" checked> Very Important
+            <input type="radio" id="governance" name="governance" value="medium"> Somewhat Important
+            <input type="radio" id="governance" name="governance" value="low"> Not Important
+        </fieldset><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+<script>
+    async function submitInvestmentData() {
+        const investment = document.getElementById('investment').value;
+        const risk = document.getElementById('risk').value;
+        const env = document.querySelector('input[name="env"]:checked').value;
+        const social = document.querySelector('input[name="social"]:checked').value;
+        const governance = document.querySelector('input[name="governance"]:checked').value;
+
+        const data = {
+            investment,
+            risk,
+            env,
+            social,
+            governance
+        };
+
+        try {
+            const response = await fetch('/api/investment-preferences', {
+                method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+            throw new Error(`Error submitting data: ${response.statusText}`);
+            }
+
+            // Handle successful response (e.g., display confirmation message)
+            console.log("Data submitted successfully!");
+        } catch (error) {
+            console.error("Error:", error);
+            // Handle errors (e.g., display error message to user)
+        }
+    }
+
+    // Call the function when the form is submitted (replace with your form submission event)
+    document.getElementById('investmentForm').addEventListener('submit', submitInvestmentData);
+</script>
+</html>
+ 

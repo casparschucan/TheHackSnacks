@@ -19,8 +19,7 @@ def send_static(path):
 
 @app.route('/')
 def index():
-    return 'Hello, World!'
-
+    return flask.render_template('index.html')
 
 @app.route('/visions')
 def visons():
@@ -86,6 +85,33 @@ def goals(vision_data):
 
     return flask.render_template('goals.html', data=data)
 
+@app.route('/forms')
+def form():
+    return flask.render_template('forms.html')
+
+# @app.route('/api/investment-preferences/', methods=['POST'])
+# def investment_preferences():
+#     pref_json = request.get_json()
+#     investment = pref_json['investment']
+#     risk = pref_json['risk']
+#     env = pref_json['env']
+#     social = pref_json['social']
+#     governance = pref_json['governance']
+
+#     # Process data (example: print to console)
+#     print(f"Investment amount: ${investment}")
+#     print(f"Risk tolerance: {risk}")
+#     print(f"Importance of Environmental Investing: {env}")
+#     print(f"Importance of Social Investing: {social}")
+#     print(f"Importance of Governance Investing: {governance}")
+
+#     # You can further process the data here (e.g., database storage, calculations)
+
+#     # Return a response (example: confirmation message)    
+#     resp = jsonify({"message": "Investment preferences received!"})
+#     resp.set_cookie("preferences", [env, social, governance])
+#     return jsonify({"message": "Investment preferences received!"})
+
 @app.route('/chat')
 def chat():
     return flask.render_template('chat.html')
@@ -127,14 +153,36 @@ def chat_message():
 def profile():
     return flask.render_template('profile.html')
 
-@app.route('/overview/<portfolio_data>', methods=['GET'])
-def overview(portfolio_data):
-    print(portfolio_data)
-    raw_input_data = json.loads(portfolio_data)
-    value = raw_input_data['value']
-    del raw_input_data['value']
+@app.route('/overview/', methods=['POST'])
+def overview():
 
-    funfacts, plots, portfolio = generate_portfolio(raw_input_data, value)
+    if request.method == 'POST':
+        raw_input_data = request.form
+        print(raw_input_data)
+
+    value = raw_input_data['investment']
+
+    #high, mid, low to int
+    parse_dict = {
+        'high': 1,
+        'mid': 0,
+        'low':-1 
+    }
+
+    #parse value from 
+    value = int(value)
+    criteria = dict()
+    visions = request.cookies.get('visions') #social governance environ 
+    visions = visions.split(',')
+    if visions[2] == '1':
+        criteria['CarbonFootprint'] = parse_dict[raw_input_data['env']]
+    if visions[0] == '1':
+        criteria['WageGap'] = parse_dict[raw_input_data['social']]
+    if visions[1] == '1':
+        criteria['BoardDiversity'] = parse_dict[raw_input_data['governance']]
+
+    print(visions)
+    funfacts, plots, portfolio = generate_portfolio(criteria, value)
 
     data = {
             "goals": [
@@ -144,24 +192,24 @@ def overview(portfolio_data):
                     "title": "I want to Help",
                     "description1": "Reducing Carbon",
                     "description2": "Emissions to Combat Climate Change",
-                    "funfact": funfacts['CarbonFootprint']
-                    "plot": plots['CarbonFootprint']
+                    "funfact": funfacts.get('CarbonFootprint',''),
+                    "plot": plots.get('CarbonFootprint', '')
                 },
                 {
                     "name": "WageGap",
                     "image_path": "../media/coin7.png",
                     "title": "I want to Help",
                     "description1": "Reducing Wage Gap",
-                    "funfact": funfacts['WageGap']
-                    "plot": plots['WageGap']
+                    "funfact": funfacts.get('WageGap',''),
+                    "plot": plots.get('WageGap', '')
                 },
                 {
                     "name": "BoardDiversity",
                     "image_path": "../media/coin7.png",
                     "title": "I want to Help",
                     "description1": "Increasing Board Diversity",
-                    "funfact": funfacts['BoardDiversity']
-                    "plot": plots['BoardDiversity']
+                    "funfact": funfacts.get('BoardDiversity',''),
+                    "plot": plots.get('BoardDiversity','')
                 }
                 
             ],

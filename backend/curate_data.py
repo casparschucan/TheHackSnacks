@@ -107,13 +107,14 @@ def generate_wage_gap(portfolio: pd.DataFrame):
 
 def generate_portfolio(criteria: dict[str, int], value):
     portfolio = portfolio_optimization(criteria)
-    portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
     htmlplots = dict()
     funfacts = dict()
     portfolio["scatter_size"] = (portfolio["weight"]  + 0.2)*2
     portfolio["colors"] = 1-portfolio["weight"]
-    for c in criteria:
+    for c in criteria.keys():
+        print(c)
         if c == "CarbonFootprint":
+            portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
             funfacts[c] = (generate_flying_miles(portfolio, value))
             carbonfig = px.scatter(portfolio, y="weight", x="CarbonFootprint", size='scatter_size', color="colors", color_continuous_scale="Bluered_r", title="Carbon Footprint")
             carbonfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Carbon Footprint (kgCO2e/€ invested)")
