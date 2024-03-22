@@ -1,6 +1,6 @@
 <head>
 
-  <link href="../style.css" rel="stylesheet">
+  <link href="/static/style.css" rel="stylesheet">
   <!-- title and icon  -->
 
   <title> SusFund - No More Sus Funds With Susfunds</title>
@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
-  <!--- Font awesome Icons -->
+  <!-- Font awesome Icons -->
   <script src="https://kit.fontawesome.com/7ef560b061.js" crossorigin="anonymous"></script>
   <!-- Animation -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -20,19 +20,19 @@
 
 <body>
 
-<!-- intro typo--->
+<!-- intro typo-->
   <div class=" container">
     <div class="typewriter">
   <h1>Hello World....</h1>
 </div>
   </div>
 
-  <!-- AI box scroll --->
+  <!-- AI box scroll -->
 
 <div class="boxcontainer">
   <div class="boxai fade">
 
-<!--======= CHATBOX =========== --->
+<!--======= CHATBOX =========== -->
 
 
 
@@ -49,7 +49,7 @@
 
     <div class="message receiver-message">
       <img src="../media/sokrat.png" class="avatar">
-      <input type="number" style="height:30px; margin:5" placeholder="Only Numbers Allowed">
+      <input id='investment' type="number" style="height:30px; margin:5" placeholder="">
     </div>
 
 
@@ -60,8 +60,8 @@
 
     <div class="message receiver-message">
       <img src="../media/sokrat.png" class="avatar">
-      <select id="level">
-        <option value="Low">Low</option>
+      <select id="risk">
+        <option value="low">Low</option>
         <option value="high">High</option>
       </select>
     </div>
@@ -77,10 +77,10 @@
 
     <div class="message receiver-message">
       <img src="../media/sokrat.png" class="avatar">
-      <select id="envo">
-        <option value="yay">Important</option>
-        <option value="meh">Somewhat</option>
-        <option value="nah">Not Important</option>
+      <select id="env">
+        <option value="high">Important</option>
+        <option value="medium">Somewhat</option>
+        <option value="low">Not Important</option>
       </select>
     </div>
     <div class="message sender-message">
@@ -90,10 +90,10 @@
 
     <div class="message receiver-message">
       <img src="../media/sokrat.png" class="avatar">
-      <select id="socio">
-        <option value="yay">Important</option>
-        <option value="meh">Somewhat</option>
-        <option value="nah">Not Important</option>
+      <select id="social">
+        <option value="high">Important</option>
+        <option value="medium">Somewhat</option>
+        <option value="low">Not Important</option>
       </select>
     </div>
 
@@ -104,10 +104,10 @@
 
     <div class="message receiver-message">
       <img src="../media/sokrat.png" class="avatar">
-      <select id="gov">
-        <option value="yay">Important</option>
-        <option value="meh">Somewhat</option>
-        <option value="nah">Not Important</option>
+      <select id="governance">
+        <option value="high">Important</option>
+        <option value="medium">Somewhat</option>
+        <option value="low">Not Important</option>
       </select>
     </div>
 
@@ -128,14 +128,14 @@
 
   </center>
 
-<!--======= CHATBOX END =========== --->
+<!--======= CHATBOX END =========== -->
 
 
   </div>
 
-    <!-- next button --->
+    <!-- next button -->
     <br><p></p><br>
-    <a href="overview.html" class="button fade" >Dashboard</a>
+    <button class="button fade" onclick="go_to_next()">Dashboard</button>
     <br><p></p><br>
 
 
@@ -205,6 +205,43 @@
       classString = classString.substr(0, nameIndex) + classString.substr(nameIndex + className.length);
     }
     element.className = classString;
+  }
+</script>
+<script>
+  function extractUserFields() {
+    const messageContainers = document.querySelectorAll(".message-container .receiver-message");
+    const fields = [];
+
+    for (const container of messageContainers) {
+      const element = container.querySelector("input, select");
+      if (element) {
+        const field = {
+          type: element.tagName.toLowerCase(),
+          id: element.id || "",
+          value: element.value || "",
+        };
+        fields.push(field);
+      }
+    }
+
+    return fields;
+  }
+
+  function go_to_next(){
+    let fields = extractUserFields();
+    fields = fields.map(field => {
+      return {
+        id: field.id,
+        value: field.value,
+      };
+    });
+    console.log(fields);
+    //put the data in a cookie
+    document.cookie = "userFields=" + JSON.stringify(fields);
+    //redirect to /overview/
+
+    window.location.href = "/overview/";
+
   }
 </script>
 

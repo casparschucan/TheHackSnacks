@@ -148,16 +148,28 @@ def chat_message():
     }
 
     return return_dict
-    
+@app.route('/ai')
+def ai():
+    return flask.render_template('ai.html')
+
 @app.route('/profile')
 def profile():
     return flask.render_template('profile.html')
 
-@app.route('/overview/', methods=['POST'])
+@app.route('/overview/', methods=['POST', 'GET'])
 def overview():
 
     if request.method == 'POST':
         raw_input_data = request.form
+        print(raw_input_data)
+    if request.method == 'GET':
+        raw_input_data = request.cookies.get('userFields')
+        raw_input_data = json.loads(raw_input_data)
+        # parse list to dict
+        raw_dict = {}
+        for elem in raw_input_data:
+            raw_dict[elem['id']] = elem['value']
+        raw_input_data = raw_dict 
         print(raw_input_data)
 
     value = raw_input_data['investment']
