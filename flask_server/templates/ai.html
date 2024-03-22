@@ -1,0 +1,211 @@
+<head>
+
+  <link href="../style.css" rel="stylesheet">
+  <!-- title and icon  -->
+
+  <title> SusFund - No More Sus Funds With Susfunds</title>
+  <link rel="icon" href="../img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  <!--- Font awesome Icons -->
+  <script src="https://kit.fontawesome.com/7ef560b061.js" crossorigin="anonymous"></script>
+  <!-- Animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- grained texture -->
+  <script src="https://cdn.jsdelivr.net/npm/grained@0.0.2/grained.min.js"></script>
+
+</head>
+
+
+<body>
+
+<!-- intro typo--->
+  <div class=" container">
+    <div class="typewriter">
+  <h1>Hello World....</h1>
+</div>
+  </div>
+
+  <!-- AI box scroll --->
+
+<div class="boxcontainer">
+  <div class="boxai fade">
+
+<!--======= CHATBOX =========== --->
+
+
+
+<div class="chat-container">
+  <div class="message-container">
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      Hello there! I am here to help you achieve your sustainable investment goals :)
+      </div>
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      How many CHF would you like to get started with for your first investment?
+      </div>
+
+    <div class="message receiver-message">
+      <img src="../media/sokrat.png" class="avatar">
+      <input type="number" style="height:30px; margin:5" placeholder="Only Numbers Allowed">
+    </div>
+
+
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      How about your risk tolerance? is it low or high?
+    </div>
+
+    <div class="message receiver-message">
+      <img src="../media/sokrat.png" class="avatar">
+      <select id="level">
+        <option value="Low">Low</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      Alright. Based on your choices earlier, lets talk about your ESG goals in some more detail
+    </div>
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      How important is enviromental investing to you?
+    </div>
+
+    <div class="message receiver-message">
+      <img src="../media/sokrat.png" class="avatar">
+      <select id="envo">
+        <option value="yay">Important</option>
+        <option value="meh">Somewhat</option>
+        <option value="nah">Not Important</option>
+      </select>
+    </div>
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      I see. What about social investing?
+    </div>
+
+    <div class="message receiver-message">
+      <img src="../media/sokrat.png" class="avatar">
+      <select id="socio">
+        <option value="yay">Important</option>
+        <option value="meh">Somewhat</option>
+        <option value="nah">Not Important</option>
+      </select>
+    </div>
+
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      Got it. How about governance investing?
+    </div>
+
+    <div class="message receiver-message">
+      <img src="../media/sokrat.png" class="avatar">
+      <select id="gov">
+        <option value="yay">Important</option>
+        <option value="meh">Somewhat</option>
+        <option value="nah">Not Important</option>
+      </select>
+    </div>
+
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      Thank you! give me a moment to think...
+    </div>
+    <div class="message sender-message">
+      <img src="../media/afina.png" class="avatar">
+      Perfect, all done! You can now go ahead to your dashboard to view goals you'll like. Have fun!
+    </div>
+
+  </div>
+</div>
+<center>
+
+<button class="button" style="margin:10;background-color:white;color:black;font-family: "Fira Sans";"><b>Next</b></button>
+
+  </center>
+
+<!--======= CHATBOX END =========== --->
+
+
+  </div>
+
+    <!-- next button --->
+    <br><p></p><br>
+    <a href="overview.html" class="button fade" >Dashboard</a>
+    <br><p></p><br>
+
+
+
+</div>
+
+
+
+
+<!-- ==================================== JS ====================================-->
+    <script>
+        var fadeElements = document.querySelectorAll('.fade');
+        window.addEventListener('scroll', fadeOnScroll);
+
+        function fadeOnScroll() {
+            fadeElements.forEach(function(el) {
+              if(el.getBoundingClientRect().top < window.innerHeight) {
+                 el.classList.add('show');
+              } else {
+                 el.classList.remove('show');
+              }
+            });
+        }
+
+        // Call the function initially to make sure elements are shown if already in view without scrolling
+        fadeOnScroll();
+
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  // Hide all messages initially
+  $(".message").hide();
+
+  // Show the first message
+  $(".message").first().show();
+
+  $("button").click(function() {
+    // When the button is clicked, find the next hidden message and show it
+    $(".message:hidden").first().slideDown();
+  });
+
+  $("select").click(function() {
+    // When the button is clicked, find the next hidden message and show it
+    $(".message:hidden").first().slideDown();
+  });
+
+  $(".choice").click(function() {
+    // When a choice is clicked, find the next two hidden messages and show them
+    $(".message:hidden").slice(0, 2).slideDown();
+  });
+</script>
+
+
+<script>
+  function toggleClass(element, className) {
+    if (!element || !className){
+      return;
+    }
+
+    var classString = element.className, nameIndex = classString.indexOf(className);
+    if (nameIndex == -1) {
+      classString += ' ' + className;
+    }
+    else {
+      classString = classString.substr(0, nameIndex) + classString.substr(nameIndex + className.length);
+    }
+    element.className = classString;
+  }
+</script>
+
+</body>
