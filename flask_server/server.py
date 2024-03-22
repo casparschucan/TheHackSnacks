@@ -226,6 +226,11 @@ def overview():
                 
             ],
         }
+
+    # filter goals according to preferences
+    data = {
+        "goals": [goal for goal in data['goals'] if goal['name'] in criteria]
+    }
     
     return flask.render_template('overview.html', data=data)
 
