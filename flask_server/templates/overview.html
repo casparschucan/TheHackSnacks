@@ -33,7 +33,7 @@
 
         <p></p><br>
 
-        below you will find all your recent investment
+          Take a look to see what you like below!
 
       </div>
     </div>
@@ -63,8 +63,12 @@
           <br><p></p><br>
           <div class="whitespace fade">
             {{ci.plot | safe}}
-            <br>
-            <div class="funfact">{{ ci.funfact }}</div>
+    
+            <div class="whitetxt"><center>
+              <h1 style="color:black;">Did You Know?</h1>
+       {{ ci.funfact }}
+        </div>
+
           </div>
           <br><p></p><br>
       {% endfor %}
