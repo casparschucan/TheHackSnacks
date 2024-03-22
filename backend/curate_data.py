@@ -129,17 +129,20 @@ def generate_flying_miles(portfolio: pd.DataFrame, value):
     """Generates the flying miles for each company"""
     e_eco_gain = portfolio["CarbonFootprint"].mul(portfolio["weight"]).sum();
     flying_miles = -e_eco_gain * value/42420/6315;
-    return f"you saved enough emissions to have an airbus a380 fly {flying_miles} times from Zürich to New York!";
+    fstring = "{:.2f}".format(flying_miles);
+    return f"you saved enough emissions to have an airbus a380 fly {fstring} times from Zürich to New York!";
 
 def generate_wage_gap(portfolio: pd.DataFrame):
     """Generates the wage gap for each company"""
     wage_gap = portfolio["WageGap"].mul(portfolio["weight"]).sum();
-    return f"The unadjusted wage gap in your portfolio is {wage_gap}%. Now compare this to the 18% here in Switzerland!";
+    fstring = "{:.2f}".format(wage_gap)
+    return f"The unadjusted wage gap in your portfolio is {fstring}%. Now compare this to the 18% here in Switzerland!";
 
 def generate_board_diversity(portfolio: pd.DataFrame):
     """Generates the board diversity for each company"""
     board_diversity = portfolio["BoardDiversity"].mul(portfolio["weight"]).sum();
-    return f"The ration of women on the boards of the companies you invested in is {board_diversity}%";
+    fstring = "{:.2f}".format(board_diversity);
+    return f"The ration of women on the boards of the companies you invested in is {fstring}%";
 
 def generate_portfolio(criteria: dict[str, int], value):
     portfolio = portfolio_optimization(criteria)
