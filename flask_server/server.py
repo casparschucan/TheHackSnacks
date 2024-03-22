@@ -1,6 +1,6 @@
 import flask
 from flask import request, jsonify
-from backend.curate_data import get_viable_funds
+from backend.curate_data import generate_portfolio, get_viable_funds
 import copy
 import json
 from flask import session
@@ -106,7 +106,12 @@ def profile():
 @app.route('/overview/<portfolio_data>', methods=['GET'])
 def overview(portfolio_data):
     print(portfolio_data)
+    raw_input_data = json.loads(portfolio_data)
+    value = raw_input_data['value']
+    del dictionary['value']
+    funfacts, plots, portfolio = generate_portfolio(dictionary, value)
 
+    
     return flask.render_template('overview.html')
 
 
