@@ -43,6 +43,20 @@ def prune_big_wage_gaps(data, threshold=15):
     wage_gap = wage_gap[wage_gap["WageGap"] < threshold]
     print(len(wage_gap))
     return wage_gap
+
+
+def prune_no_diversity(data, threshold=20):
+    """Removes companies with a low diversity from dataframe"""
+    #Get entries for which all 3 scope entries are available
+    diversity = pd.concat([data['31090_Board_Gender_Diversity_Value']], axis=1).dropna();
+    diversity["BoardDiversity_raw"] = (diversity["31090_Board_Gender_Diversity_Value"]*100)
+    diversity = diversity.drop(columns=["31090_Board_Gender_Diversity_Value"]);
+    diversity = diversity[diversity["BoardDiversity_raw"] >= threshold]
+    diversity = diversity[diversity["BoardDiversity_raw"] < 100 - threshold]
+    diversity["BoardDiversity"] = abs(diversity["BoardDiversity_raw"] - 50);
+    print(len(diversity))
+    return diversity
+
         
 
 
@@ -59,6 +73,9 @@ def get_viable_funds(criteria):
         if crit == 'WageGap':
             pruned_columns.append(prune_big_wage_gaps(data));
 
+        if crit == 'BoardDiversity':
+            pruned_columns.append(prune_no_diversity(data));
+
     viable_funds = pd.concat(pruned_columns, axis=1, join='inner').dropna();
             
     return viable_funds
@@ -73,7 +90,7 @@ def portfolio_optimization(criteria: dict[str, int]):
         portfolio = rebalance(portfolio, c, v, n)
     # Normalize weights to sum up to 1
     portfolio = portfolio.sort_values(by='weight', ascending=False)
-    portfolio = portfolio[:30]
+    portfolio = portfolio[:min(len(portfolio), 30)]
     portfolio['weight'] /= portfolio['weight'].sum()
     return portfolio
 
@@ -98,22 +115,27 @@ def generate_flying_miles(portfolio: pd.DataFrame, value):
     """Generates the flying miles for each company"""
     e_eco_gain = portfolio["CarbonFootprint"].mul(portfolio["weight"]).sum();
     flying_miles = -e_eco_gain * value/42420/6315;
-    return f"you saved enough emissions to have an airbus a380 fly {flying_miles}x times from Zürich to New York!";
+    return f"you saved enough emissions to have an airbus a380 fly {flying_miles} times from Zürich to New York!";
 
 def generate_wage_gap(portfolio: pd.DataFrame):
     """Generates the wage gap for each company"""
     wage_gap = portfolio["WageGap"].mul(portfolio["weight"]).sum();
-    return f"The unadjusted wage gap in your portfolio {wage_gap}% is far better than the 18% here in Switzerland!";
+    return f"The unadjusted wage gap in your portfolio is {wage_gap}%. Now compare this to the 18% here in Switzerland!";
+
+def generate_board_diversity(portfolio: pd.DataFrame):
+    """Generates the board diversity for each company"""
+    board_diversity = portfolio["BoardDiversity"].mul(portfolio["weight"]).sum();
+    return f"The ration of women on the boards of the companies you invested in is {board_diversity}%";
 
 def generate_portfolio(criteria: dict[str, int], value):
     portfolio = portfolio_optimization(criteria)
-    portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
     htmlplots = list()
     funfacts = list()
     portfolio["scatter_size"] = (portfolio["weight"]  + 0.2)*2
     portfolio["colors"] = 1-portfolio["weight"]
     for c in criteria:
         if c == "CarbonFootprint":
+            portfolio["CarbonFootprint"] = (portfolio["CarbonFootprint"] + 52814)/1000;
             funfacts.append(generate_flying_miles(portfolio, value))
             carbonfig = px.scatter(portfolio, y="weight", x="CarbonFootprint", size='scatter_size', color="colors", color_continuous_scale="Bluered_r", title="Carbon Footprint")
             carbonfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Carbon Footprint (kgCO2e/€ invested)")
@@ -123,4 +145,10 @@ def generate_portfolio(criteria: dict[str, int], value):
             wagefig = px.scatter(portfolio, y="weight", x="WageGap", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Wage Gap")
             wagefig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="Wage Gap (%)")
             htmlplots.append(wagefig.to_html(full_html=False, include_plotlyjs='cdn'))
+        if c == "BoardDiversity":
+            funfacts.append(generate_board_diversity(portfolio))
+            diversityfig = px.scatter(portfolio, y="weight", x="BoardDiversity_raw", size="scatter_size", color="colors", color_continuous_scale="Bluered_r", title="Board Diversity")
+            diversityfig.update_layout(yaxis_title="Proportion of money invested", xaxis_title="female to male ratio on boards (%)")
+            htmlplots.append(diversityfig.to_html(full_html=False, include_plotlyjs='cdn'))
+
     return funfacts, htmlplots, portfolio
